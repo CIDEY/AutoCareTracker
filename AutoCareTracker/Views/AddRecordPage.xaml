@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AutoCareTracker.Views.AddRecordPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Новая запись">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label FontAttributes="Bold" Text="Тип работы" />
+            <Picker
+                Title="Выберите тип работы"
+                ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}" />
+
+            <Label FontAttributes="Bold" Text="Пробег (км)" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="150000"
+                Text="{Binding Mileage}" />
+
+            <Label FontAttributes="Bold" Text="Дата" />
+            <DatePicker Date="{Binding Date}" />
+
+            <Label FontAttributes="Bold" Text="Стоимость (руб)" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="5000"
+                Text="{Binding Cost}" />
+
+            <Label FontAttributes="Bold" Text="Заметки" />
+            <Editor
+                HeightRequest="100"
+                Placeholder="Дополнительная информация"
+                Text="{Binding Notes}" />
+
+            <Button
+                Margin="0,20,0,0"
+                BackgroundColor="#2196F3"
+                Command="{Binding SaveRecordCommand}"
+                HeightRequest="50"
+                Text="{Binding ButtonText}"
+                TextColor="White" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AutoCareTracker.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AutoCareTracker.ViewModels"
+    Title="Моё Авто">
+
+    <!--  Поменяли RowDefinitions: теперь 3 строки  -->
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!--  1. Панель суммы (Строка 0)  -->
+        <Frame
+            Grid.Row="0"
+            Margin="10"
+            BackgroundColor="#2196F3">
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="5">
+                <!--  Общая сумма  -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Label
+                        FontSize="18"
+                        Text="Всего потрачено:"
+                        TextColor="White" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="{Binding TotalCost, StringFormat='{0} ₽'}"
+                        TextColor="White" />
+                </HorizontalStackLayout>
+
+                <!--  Статус масла  -->
+                <Label
+                    FontAttributes="Italic"
+                    HorizontalOptions="Center"
+                    Text="{Binding OilStatus}"
+                    TextColor="#FFEB3B" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <!--  2. Список записей (Строка 1)  -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Records}">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    Margin="0,50,0,0"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="50"
+                        HorizontalOptions="Center"
+                        Text="🚗" />
+                    <Label
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Text="История обслуживания пуста"
+                        TextColor="Gray" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem
+                                    BackgroundColor="Red"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DeleteRecordCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Text="Удалить" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame
+                            Margin="10,5"
+                            Padding="15"
+                            BorderColor="#E0E0E0"
+                            CornerRadius="8">
+
+                            <!--  ДОБАВЛЯЕМ ВОТ ЭТОТ БЛОК  -->
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=EditRecordCommand}" CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <!--  КОНЕЦ НОВОГО БЛОКА  -->
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        Text="{Binding WorkType}" />
+                                    <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" TextColor="Gray" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center">
+                                    <Label HorizontalOptions="End" Text="{Binding Mileage, StringFormat='{0} км'}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Cost, StringFormat='{0} ₽'}"
+                                        TextColor="Green" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  3. Кнопка добавить (Строка 2)  -->
+        <Button
+            Grid.Row="2"
+            Margin="20"
+            Command="{Binding GoToAddPageCommand}"
+            HeightRequest="50"
+            Text="Добавить запись" />
+    </Grid>
+
+</ContentPage>
