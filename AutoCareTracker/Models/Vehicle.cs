@@ -26,10 +26,8 @@ namespace AutoCareTracker.Models
         {
             get
             {
-                // Генерируем уникальный цвет на основе названия бренда
                 if (string.IsNullOrWhiteSpace(Brand)) return Colors.Gray;
                 int hash = Brand.GetHashCode();
-                // Список приятных пастельных цветов
                 string[] colors = { "#4572ED", "#2AB27B", "#FF5252", "#FFAB40", "#7C4DFF", "#00B8D4" };
                 return Color.FromArgb(colors[Math.Abs(hash) % colors.Length]);
             }

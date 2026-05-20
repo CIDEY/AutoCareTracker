@@ -30,7 +30,6 @@ namespace AutoCareTracker.ViewModels
         [RelayCommand]
         public async Task AddVehicle()
         {
-            // Упрощенный ввод через диалоговые окна (быстро и удобно)
             string brand = await Shell.Current.DisplayPromptAsync("Новое авто", "Введите марку (напр. BMW):");
             if (string.IsNullOrWhiteSpace(brand)) return;
 
@@ -47,10 +46,8 @@ namespace AutoCareTracker.ViewModels
         {
             if (vehicle == null) return;
 
-            // Сохраняем выбор в глобальное состояние
             AppState.SelectedVehicle = vehicle;
 
-            // Переходим на главную страницу с записями ТО
             await Shell.Current.GoToAsync("//MainPage");
         }
 

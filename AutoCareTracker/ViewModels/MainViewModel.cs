@@ -32,7 +32,6 @@ namespace AutoCareTracker.ViewModels
 
         private void CalculateOilStatus()
         {
-            // Ищем последнюю запись про масло
             var lastOilChange = Records.FirstOrDefault(r => r.WorkType == "Замена масла");
 
             if (lastOilChange == null)
@@ -41,7 +40,7 @@ namespace AutoCareTracker.ViewModels
                 return;
             }
 
-            int currentMileage = Records.Max(x => x.Mileage); // Берем самый большой пробег из всех записей
+            int currentMileage = Records.Max(x => x.Mileage); 
             int milesSinceOil = currentMileage - lastOilChange.Mileage;
             int remaining = 10000 - milesSinceOil;
 
@@ -51,21 +50,18 @@ namespace AutoCareTracker.ViewModels
                 OilStatus = $"Замена масла через: {remaining} км";
         }
 
-        // Свойство для заголовка (название авто)
         [ObservableProperty]
         private string _currentVehicleHeader;
 
-        // Свойство для подзаголовка (госномер)
         [ObservableProperty]
         private string _currentVehiclePlate;
 
         [RelayCommand]
         public async Task GoToGarage()
         {
-            await Shell.Current.GoToAsync("//GaragePage"); // Возвращаемся в корень на страницу гаража
+            await Shell.Current.GoToAsync("//GaragePage");
         }
 
-        // Метод для подсчета
         private void CalculateTotalCost()
         {
             TotalCost = Records.Sum(x => x.Cost);
@@ -76,14 +72,12 @@ namespace AutoCareTracker.ViewModels
         {
             try
             {
-                // 1. Проверяем, выбрана ли машина (на всякий случай)
                 if (AppState.SelectedVehicle == null)
                 {
                     await Shell.Current.DisplayAlert("Ошибка", "Сначала выберите автомобиль", "OK");
                     return;
                 }
 
-                // 2. ПЕРЕДАЕМ ID выбранной машины в метод (исправление ошибки)
                 var items = await _dbService.GetRecordsAsync(AppState.SelectedVehicle.Id);
 
                 if (items == null || items.Count == 0)
@@ -92,7 +86,6 @@ namespace AutoCareTracker.ViewModels
                     return;
                 }
 
-                // 3. Формируем текст (добавим название машины в заголовок для крутости)
                 var csvContent = new System.Text.StringBuilder();
                 csvContent.AppendLine($"Отчет для автомобиля: {AppState.SelectedVehicle.FullName} ({AppState.SelectedVehicle.Plate})");
                 csvContent.AppendLine("Дата;Тип работы;Пробег (км);Стоимость (руб);Заметки");
@@ -102,7 +95,6 @@ namespace AutoCareTracker.ViewModels
                     csvContent.AppendLine($"{item.Date:dd.MM.yyyy};{item.WorkType};{item.Mileage};{item.Cost};{item.Notes}");
                 }
 
-                // Далее старый код без изменений...
                 string fileName = $"Report_{AppState.SelectedVehicle.Brand}.csv";
                 string targetFile = Path.Combine(FileSystem.CacheDirectory, fileName);
                 var encoding = new System.Text.UTF8Encoding(true);
@@ -120,20 +112,16 @@ namespace AutoCareTracker.ViewModels
             }
         }
 
-        // Метод загрузки данных
         [RelayCommand]
         public async Task LoadRecords()
         {
             if (AppState.SelectedVehicle == null) return;
 
-            // Обновляем заголовок данными из AppState
             CurrentVehicleHeader = AppState.SelectedVehicle.FullName;
             CurrentVehiclePlate = AppState.SelectedVehicle.Plate;
 
-            // Загружаем записи только для выбранного авто
             var items = await _dbService.GetRecordsAsync(AppState.SelectedVehicle.Id);
 
-            // Если поиск не пустой — фильтруем список
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 items = items.Where(x => x.WorkType.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -149,7 +137,6 @@ namespace AutoCareTracker.ViewModels
         [ObservableProperty]
         private string _searchText;
 
-        // Вызывай метод загрузки при каждом изменении текста поиска
         partial void OnSearchTextChanged(string value)
         {
             LoadRecordsCommand.Execute(null);
@@ -160,21 +147,17 @@ namespace AutoCareTracker.ViewModels
         {
             if (record == null) return;
 
-            // Передаем выбранную запись на страницу редактирования
             var navParam = new Dictionary<string, object>
             {
                 { "Record", record }
             };
 
-            // В GoToAsync имя страницы должно совпадать с тем, что ты указал в AppShell
             await Shell.Current.GoToAsync("AddRecordPage", navParam);
         }
 
-        // Команда перехода на страницу добавления
         [RelayCommand]
         public async Task GoToAddPage()
         {
-            // Имя должно совпадать с тем, что в AppShell
             await Shell.Current.GoToAsync("AddRecordPage");
         }
 
@@ -185,8 +168,8 @@ namespace AutoCareTracker.ViewModels
             if (answer)
             {
                 await _dbService.DeleteRecordAsync(record);
-                Records.Remove(record); // Удаляем из списка на экране
-                CalculateTotalCost();   // Пересчитываем сумму
+                Records.Remove(record);
+                CalculateTotalCost();
             }
         }
     }

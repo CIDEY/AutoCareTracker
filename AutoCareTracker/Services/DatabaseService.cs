@@ -11,11 +11,9 @@ namespace AutoCareTracker.Services
         {
             if (_database is not null) return;
 
-            // Используем V2, так как структура БД изменилась
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "AutoCareV2.db3");
             _database = new SQLiteAsyncConnection(dbPath);
 
-            // Создаем обе таблицы
             await _database.CreateTableAsync<Vehicle>();
             await _database.CreateTableAsync<ServiceRecord>();
         }
@@ -37,15 +35,12 @@ namespace AutoCareTracker.Services
         public async Task DeleteVehicleAsync(Vehicle vehicle)
         {
             await Init();
-            // Сначала удаляем все записи ТО, связанные с этой машиной (через SQL запрос)
             await _database.ExecuteAsync("DELETE FROM ServiceRecord WHERE VehicleId = ?", vehicle.Id);
-            // Затем удаляем саму машину
             await _database.DeleteAsync(vehicle);
         }
 
         // === РАБОТА С ЗАПИСЯМИ ТО (SERVICE RECORDS) ===
 
-        // Получаем записи только для конкретной машины
         public async Task<List<ServiceRecord>> GetRecordsAsync(int vehicleId)
         {
             await Init();

@@ -7,13 +7,13 @@ namespace AutoCareTracker
         public MainPage(MainViewModel vm)
         {
             InitializeComponent();
-            BindingContext = vm; // Без этой строки привязки (Binding) работать не будут
+            BindingContext = vm;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Вызываем команду загрузки данных из ViewModel
+
             var vm = BindingContext as ViewModels.MainViewModel;
             if (vm != null)
             {

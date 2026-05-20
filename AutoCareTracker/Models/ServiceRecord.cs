@@ -7,7 +7,6 @@ namespace AutoCareTracker.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        // Ссылка на автомобиль, к которому относится запись
         public int VehicleId { get; set; }
 
         public string WorkType { get; set; }

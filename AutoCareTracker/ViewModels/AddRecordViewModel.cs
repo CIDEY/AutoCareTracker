@@ -5,23 +5,19 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AutoCareTracker.ViewModels
 {
-    // Атрибут для получения объекта при переходе (режим редактирования)
     [QueryProperty(nameof(ExistingRecord), "Record")]
     public partial class AddRecordViewModel : ObservableObject
     {
         private readonly DatabaseService _dbService;
 
-        // Поля для формы ввода
         [ObservableProperty] private string _mileage;
         [ObservableProperty] private DateTime _date = DateTime.Now;
         [ObservableProperty] private string _cost;
         [ObservableProperty] private string _notes;
         [ObservableProperty] private string _selectedCategory;
 
-        // Текст кнопки (будет меняться динамически)
         [ObservableProperty] private string _buttonText = "Сохранить";
 
-        // Скрытое свойство для хранения редактируемой записи
         [ObservableProperty] private ServiceRecord _existingRecord;
 
         public AddRecordViewModel(DatabaseService dbService)
@@ -35,12 +31,10 @@ namespace AutoCareTracker.ViewModels
             "Замена масла", "Фильтры", "Тормоза", "Шиномонтаж", "Подвеска", "Прочее"
         };
 
-        // Метод срабатывает автоматически, когда в ViewModel "залетает" запись для редактирования
         partial void OnExistingRecordChanged(ServiceRecord value)
         {
             if (value != null)
             {
-                // Заполняем поля данными из пришедшей записи
                 SelectedCategory = value.WorkType;
                 Mileage = value.Mileage.ToString();
                 Date = value.Date;
@@ -54,7 +48,6 @@ namespace AutoCareTracker.ViewModels
         [RelayCommand]
         public async Task SaveRecord()
         {
-            // Валидация
             if (string.IsNullOrWhiteSpace(SelectedCategory) || string.IsNullOrWhiteSpace(Mileage))
             {
                 await Shell.Current.DisplayAlert("Ошибка", "Заполните тип работы и пробег", "OK");
@@ -63,7 +56,6 @@ namespace AutoCareTracker.ViewModels
 
             if (ExistingRecord == null)
             {
-                // ЛОГИКА СОЗДАНИЯ (твой старый код)
                 var newRecord = new ServiceRecord
                 {
                     VehicleId = AppState.SelectedVehicle.Id,
@@ -77,7 +69,6 @@ namespace AutoCareTracker.ViewModels
             }
             else
             {
-                // ЛОГИКА ОБНОВЛЕНИЯ
                 ExistingRecord.WorkType = SelectedCategory;
                 ExistingRecord.Mileage = int.TryParse(Mileage, out var m) ? m : 0;
                 ExistingRecord.Date = Date;
@@ -87,7 +78,6 @@ namespace AutoCareTracker.ViewModels
                 await _dbService.UpdateRecordAsync(ExistingRecord);
             }
 
-            // Возврат назад
             await Shell.Current.GoToAsync("..");
         }
     }
