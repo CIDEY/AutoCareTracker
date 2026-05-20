@@ -12,109 +12,175 @@
         <!--  Добавили третью строку (Auto) специально для поиска  -->
         <Grid RowDefinitions="Auto, Auto, *">
 
-            <!--  1. Шапка с градиентом (Row 0)  -->
-            <!--  Увеличил высоту до 230, чтобы карточка и заголовки влезли  -->
+            <!--  1. Фоновый градиент (теперь чуть выше для динамики)  -->
             <BoxView
                 Grid.Row="0"
-                HeightRequest="230"
+                HeightRequest="250"
                 VerticalOptions="Start">
                 <BoxView.Background>
-                    <LinearGradientBrush EndPoint="1,0">
+                    <LinearGradientBrush EndPoint="1,1">
                         <GradientStop Offset="0.1" Color="#4572ED" />
                         <GradientStop Offset="1.0" Color="#2AB27B" />
                     </LinearGradientBrush>
                 </BoxView.Background>
             </BoxView>
 
+            <!--  ОСНОВНОЙ КОНТЕНТ ШАПКИ  -->
             <VerticalStackLayout
                 Grid.Row="0"
-                Padding="25,50,25,0"
-                Spacing="5">
+                Padding="20,45,20,0"
+                Spacing="15">
 
-                <Grid ColumnDefinitions="*, Auto">
-                    <VerticalStackLayout Grid.Column="0">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="32"
-                            Text="Моё Авто"
-                            TextColor="White" />
-                        <Label
-                            FontSize="14"
-                            Text="Ваш бортовой журнал"
-                            TextColor="#D1D1D1" />
-                    </VerticalStackLayout>
+                <!--  Верхняя панель действий  -->
+                <Grid ColumnDefinitions="Auto, *, Auto">
 
-                    <Button
+                    <!--  Кнопка "Назад" в стиле круглого бейджа  -->
+                    <Frame
+                        Grid.Column="0"
+                        Padding="0"
+                        BackgroundColor="#33FFFFFF"
+                        BorderColor="Transparent"
+                        CornerRadius="20"
+                        HasShadow="False"
+                        HeightRequest="40"
+                        WidthRequest="40">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToGarageCommand}" />
+                        </Frame.GestureRecognizers>
+                        <Label
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="←"
+                            TextColor="White"
+                            TranslationY="-1"
+                            VerticalOptions="Center" />
+                    </Frame>
+
+                    <!--  Название авто по центру  -->
+                    <VerticalStackLayout
                         Grid.Column="1"
-                        BackgroundColor="Transparent"
-                        Command="{Binding ExportToCsvCommand}"
-                        FontSize="24"
-                        HeightRequest="60"
-                        Text="📊"
-                        TextColor="White"
-                        VerticalOptions="Start"
-                        WidthRequest="60" />
-                </Grid>
-
-                <Frame
-                    Margin="0,15,0,0"
-                    Padding="20"
-                    BorderColor="Transparent"
-                    CornerRadius="15"
-                    HasShadow="True">
-                    <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
+                        HorizontalOptions="Center"
+                        Spacing="2"
+                        VerticalOptions="Center">
                         <Label
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            FontAttributes="Bold"
-                            FontSize="11"
-                            Text="ВСЕГО ТРАТ"
-                            TextColor="Gray" />
-                        <Label
-                            Grid.Row="1"
-                            Grid.Column="0"
                             FontAttributes="Bold"
                             FontSize="20"
-                            Text="{Binding TotalCost, StringFormat='{0:N0} ₽'}"
-                            TextColor="#2C3E50" />
-
+                            HorizontalOptions="Center"
+                            Text="{Binding CurrentVehicleHeader}"
+                            TextColor="White" />
                         <Label
-                            Grid.Row="0"
-                            Grid.Column="1"
+                            CharacterSpacing="2"
                             FontAttributes="Bold"
                             FontSize="11"
-                            HorizontalOptions="End"
-                            Text="СТАТУС МАСЛА"
-                            TextColor="Gray" />
+                            HorizontalOptions="Center"
+                            Text="{Binding CurrentVehiclePlate}"
+                            TextColor="#E0E0E0" />
+                    </VerticalStackLayout>
+
+                    <!--  Кнопка экспорта в таком же стиле  -->
+                    <Frame
+                        Grid.Column="2"
+                        Padding="0"
+                        BackgroundColor="#33FFFFFF"
+                        BorderColor="Transparent"
+                        CornerRadius="20"
+                        HasShadow="False"
+                        HeightRequest="40"
+                        WidthRequest="40">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ExportToCsvCommand}" />
+                        </Frame.GestureRecognizers>
                         <Label
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            FontAttributes="Bold"
-                            FontSize="12"
-                            HorizontalOptions="End"
-                            Text="{Binding OilStatus}"
-                            TextColor="#4572ED"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="⇪"
+                            TextColor="White"
+                            TranslationY="-2"
                             VerticalOptions="Center" />
+                    </Frame>
+                </Grid>
+
+                <!--  Карточка "Статистика" с мягкой тенью и более чистым дизайном  -->
+                <Frame
+                    Margin="5,5,5,0"
+                    Padding="20"
+                    BackgroundColor="White"
+                    BorderColor="Transparent"
+                    CornerRadius="20"
+                    HasShadow="True">
+                    <Frame.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.1"
+                            Radius="15"
+                            Offset="0,5" />
+                    </Frame.Shadow>
+                    <Grid ColumnDefinitions="*, 1, *" ColumnSpacing="15">
+                        <!--  Блок Трат  -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label
+                                CharacterSpacing="1"
+                                FontAttributes="Bold"
+                                FontSize="10"
+                                Text="ОБЩИЕ ТРАТЫ"
+                                TextColor="#95A5A6" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="22"
+                                Text="{Binding TotalCost, StringFormat='{0:N0} ₽'}"
+                                TextColor="#2C3E50" />
+                        </VerticalStackLayout>
+
+                        <!--  Разделитель  -->
+                        <BoxView
+                            Grid.Column="1"
+                            BackgroundColor="#F0F3F5"
+                            VerticalOptions="Fill"
+                            WidthRequest="1" />
+
+                        <!--  Блок Масла  -->
+                        <VerticalStackLayout Grid.Column="2" Spacing="5">
+                            <Label
+                                CharacterSpacing="1"
+                                FontAttributes="Bold"
+                                FontSize="10"
+                                HorizontalOptions="End"
+                                Text="ДО ЗАМЕНЫ"
+                                TextColor="#95A5A6" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalOptions="End"
+                                MaxLines="2"
+                                Text="{Binding OilStatus}"
+                                TextColor="#4572ED"
+                                VerticalOptions="Center" />
+                        </VerticalStackLayout>
                     </Grid>
                 </Frame>
             </VerticalStackLayout>
 
-            <!--  2. Поиск (Row 1)  -->
-            <!--  Обернули в Frame для красоты и закругления  -->
+            <!--  2. Поиск с легким эффектом парения  -->
             <Frame
                 Grid.Row="1"
-                Margin="15,10,15,5"
-                Padding="0"
+                Margin="25,5,25,10"
+                Padding="5,0"
                 BackgroundColor="White"
                 BorderColor="Transparent"
-                CornerRadius="12"
-                HasShadow="False"
-                HeightRequest="50">
+                CornerRadius="24"
+                HasShadow="True"
+                HeightRequest="48">
+                <Frame.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Opacity="0.05"
+                        Radius="5"
+                        Offset="0,2" />
+                </Frame.Shadow>
                 <SearchBar
                     BackgroundColor="Transparent"
-                    CancelButtonColor="Gray"
                     FontSize="14"
-                    Placeholder="Поиск по работам..."
+                    Placeholder="Найти запись..."
                     Text="{Binding SearchText}" />
             </Frame>
 

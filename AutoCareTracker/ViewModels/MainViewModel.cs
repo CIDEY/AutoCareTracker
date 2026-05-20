@@ -51,6 +51,20 @@ namespace AutoCareTracker.ViewModels
                 OilStatus = $"Замена масла через: {remaining} км";
         }
 
+        // Свойство для заголовка (название авто)
+        [ObservableProperty]
+        private string _currentVehicleHeader;
+
+        // Свойство для подзаголовка (госномер)
+        [ObservableProperty]
+        private string _currentVehiclePlate;
+
+        [RelayCommand]
+        public async Task GoToGarage()
+        {
+            await Shell.Current.GoToAsync("//GaragePage"); // Возвращаемся в корень на страницу гаража
+        }
+
         // Метод для подсчета
         private void CalculateTotalCost()
         {
@@ -111,6 +125,10 @@ namespace AutoCareTracker.ViewModels
         public async Task LoadRecords()
         {
             if (AppState.SelectedVehicle == null) return;
+
+            // Обновляем заголовок данными из AppState
+            CurrentVehicleHeader = AppState.SelectedVehicle.FullName;
+            CurrentVehiclePlate = AppState.SelectedVehicle.Plate;
 
             // Загружаем записи только для выбранного авто
             var items = await _dbService.GetRecordsAsync(AppState.SelectedVehicle.Id);

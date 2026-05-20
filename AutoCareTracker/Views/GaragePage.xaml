@@ -81,15 +81,31 @@
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:GarageViewModel}}, Path=SelectVehicleCommand}" CommandParameter="{Binding .}" />
                             </Frame.GestureRecognizers>
                             <HorizontalStackLayout Spacing="20">
-                                <Ellipse
-                                    Fill="#F0F3FF"
-                                    HeightRequest="50"
-                                    WidthRequest="50" />
-                                <Label
-                                    HorizontalOptions="Center"
-                                    Text="🚗"
-                                    TranslationX="-35"
-                                    VerticalOptions="Center" />
+                                <!--  Контейнер для логотипа  -->
+                                <Grid HeightRequest="55" WidthRequest="55">
+
+                                    <!--  1. Круг с цветом бренда  -->
+                                    <Ellipse Fill="{Binding CircleColor}" />
+
+                                    <!--  2. Первая буква (видна всегда, если нет картинки)  -->
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="22"
+                                        HorizontalOptions="Center"
+                                        Text="{Binding MainLetter}"
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
+
+                                    <!--  3. Логотип (ложится сверху и закрывает букву, если загрузится)  -->
+                                    <Image
+                                        Aspect="AspectFit"
+                                        BackgroundColor="Transparent"
+                                        HeightRequest="45"
+                                        HorizontalOptions="Center"
+                                        Source="{Binding LogoUrl}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="45" />
+                                </Grid>
 
                                 <VerticalStackLayout VerticalOptions="Center">
                                     <Label
@@ -98,6 +114,7 @@
                                         Text="{Binding FullName}"
                                         TextColor="#2C3E50" />
                                     <Label
+                                        CharacterSpacing="2"
                                         FontAttributes="Bold"
                                         FontSize="13"
                                         Text="{Binding Plate}"
