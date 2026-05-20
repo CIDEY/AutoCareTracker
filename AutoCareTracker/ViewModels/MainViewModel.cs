@@ -57,30 +57,84 @@ namespace AutoCareTracker.ViewModels
             TotalCost = Records.Sum(x => x.Cost);
         }
 
-        // И не забудь вызвать CalculateTotalCost() в конце метода LoadRecords!
+        [RelayCommand]
+        public async Task ExportToCsv()
+        {
+            try
+            {
+                // 1. Проверяем, выбрана ли машина (на всякий случай)
+                if (AppState.SelectedVehicle == null)
+                {
+                    await Shell.Current.DisplayAlert("Ошибка", "Сначала выберите автомобиль", "OK");
+                    return;
+                }
+
+                // 2. ПЕРЕДАЕМ ID выбранной машины в метод (исправление ошибки)
+                var items = await _dbService.GetRecordsAsync(AppState.SelectedVehicle.Id);
+
+                if (items == null || items.Count == 0)
+                {
+                    await Shell.Current.DisplayAlert("Инфо", "Нет данных для экспорта", "OK");
+                    return;
+                }
+
+                // 3. Формируем текст (добавим название машины в заголовок для крутости)
+                var csvContent = new System.Text.StringBuilder();
+                csvContent.AppendLine($"Отчет для автомобиля: {AppState.SelectedVehicle.FullName} ({AppState.SelectedVehicle.Plate})");
+                csvContent.AppendLine("Дата;Тип работы;Пробег (км);Стоимость (руб);Заметки");
+
+                foreach (var item in items)
+                {
+                    csvContent.AppendLine($"{item.Date:dd.MM.yyyy};{item.WorkType};{item.Mileage};{item.Cost};{item.Notes}");
+                }
+
+                // Далее старый код без изменений...
+                string fileName = $"Report_{AppState.SelectedVehicle.Brand}.csv";
+                string targetFile = Path.Combine(FileSystem.CacheDirectory, fileName);
+                var encoding = new System.Text.UTF8Encoding(true);
+                await File.WriteAllTextAsync(targetFile, csvContent.ToString(), encoding);
+
+                await Share.Default.RequestAsync(new ShareFileRequest
+                {
+                    Title = $"Экспорт ТО: {AppState.SelectedVehicle.FullName}",
+                    File = new ShareFile(targetFile)
+                });
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", $"Не удалось экспортировать: {ex.Message}", "OK");
+            }
+        }
 
         // Метод загрузки данных
         [RelayCommand]
         public async Task LoadRecords()
         {
-            // 1. Получаем данные из базы
-            var items = await _dbService.GetRecordsAsync();
+            if (AppState.SelectedVehicle == null) return;
 
-            // 2. Чистим старый список
-            Records.Clear();
+            // Загружаем записи только для выбранного авто
+            var items = await _dbService.GetRecordsAsync(AppState.SelectedVehicle.Id);
 
-            // 3. Заполняем новый
-            foreach (var item in items)
+            // Если поиск не пустой — фильтруем список
+            if (!string.IsNullOrWhiteSpace(SearchText))
             {
-                Records.Add(item);
+                items = items.Where(x => x.WorkType.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            // 4. И только ПОСЛЕ этого считаем сумму
-            // Важно: пишем TotalCost с большой буквы!
-            TotalCost = Records.Sum(x => x.Cost);
+            Records.Clear();
+            foreach (var item in items) Records.Add(item);
 
-            // Если ты добавил статус масла, вызови и его здесь
+            TotalCost = Records.Sum(x => x.Cost);
             CalculateOilStatus();
+        }
+
+        [ObservableProperty]
+        private string _searchText;
+
+        // Вызывай метод загрузки при каждом изменении текста поиска
+        partial void OnSearchTextChanged(string value)
+        {
+            LoadRecordsCommand.Execute(null);
         }
 
         [RelayCommand]

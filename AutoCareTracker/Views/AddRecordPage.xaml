@@ -3,47 +3,129 @@
     x:Class="AutoCareTracker.Views.AddRecordPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Новая запись">
+    Title="{Binding ButtonText}"
+    BackgroundColor="#F5F6FA">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-            <Label FontAttributes="Bold" Text="Тип работы" />
-            <Picker
-                Title="Выберите тип работы"
-                ItemsSource="{Binding Categories}"
-                SelectedItem="{Binding SelectedCategory}" />
+            <Frame
+                Padding="20"
+                BorderColor="Transparent"
+                CornerRadius="15"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="15">
 
-            <Label FontAttributes="Bold" Text="Пробег (км)" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="150000"
-                Text="{Binding Mileage}" />
+                    <Label
+                        Margin="0,0,0,10"
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="ОСНОВНАЯ ИНФОРМАЦИЯ"
+                        TextColor="#4572ED" />
 
-            <Label FontAttributes="Bold" Text="Дата" />
-            <DatePicker Date="{Binding Date}" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            Margin="5,0"
+                            FontSize="14"
+                            Text="Что было сделано?"
+                            TextColor="Gray" />
+                        <Frame
+                            Padding="10,0"
+                            BackgroundColor="#F9FAFB"
+                            BorderColor="#E0E0E0"
+                            CornerRadius="10">
+                            <Picker
+                                Title="Выберите категорию"
+                                ItemsSource="{Binding Categories}"
+                                SelectedItem="{Binding SelectedCategory}" />
+                        </Frame>
+                    </VerticalStackLayout>
 
-            <Label FontAttributes="Bold" Text="Стоимость (руб)" />
-            <Entry
-                Keyboard="Numeric"
-                Placeholder="5000"
-                Text="{Binding Cost}" />
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            Margin="5,0"
+                            FontSize="14"
+                            Text="Текущий пробег (км)"
+                            TextColor="Gray" />
+                        <Frame
+                            Padding="10,0"
+                            BackgroundColor="#F9FAFB"
+                            BorderColor="#E0E0E0"
+                            CornerRadius="10">
+                            <Entry
+                                Keyboard="Numeric"
+                                Placeholder="Напр. 150000"
+                                Text="{Binding Mileage}" />
+                        </Frame>
+                    </VerticalStackLayout>
 
-            <Label FontAttributes="Bold" Text="Заметки" />
-            <Editor
-                HeightRequest="100"
-                Placeholder="Дополнительная информация"
-                Text="{Binding Notes}" />
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label
+                                Margin="5,0"
+                                FontSize="14"
+                                Text="Дата"
+                                TextColor="Gray" />
+                            <Frame
+                                Padding="10,0"
+                                BackgroundColor="#F9FAFB"
+                                BorderColor="#E0E0E0"
+                                CornerRadius="10">
+                                <DatePicker Date="{Binding Date}" Format="dd.MM.yyyy" />
+                            </Frame>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label
+                                Margin="5,0"
+                                FontSize="14"
+                                Text="Стоимость"
+                                TextColor="Gray" />
+                            <Frame
+                                Padding="10,0"
+                                BackgroundColor="#F9FAFB"
+                                BorderColor="#E0E0E0"
+                                CornerRadius="10">
+                                <Entry
+                                    Keyboard="Numeric"
+                                    Placeholder="₽"
+                                    Text="{Binding Cost}" />
+                            </Frame>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            Margin="5,0"
+                            FontSize="14"
+                            Text="Заметки"
+                            TextColor="Gray" />
+                        <Frame
+                            Padding="10,5"
+                            BackgroundColor="#F9FAFB"
+                            BorderColor="#E0E0E0"
+                            CornerRadius="10">
+                            <Editor
+                                AutoSize="TextChanges"
+                                MinimumHeightRequest="80"
+                                Placeholder="Что именно меняли..."
+                                Text="{Binding Notes}" />
+                        </Frame>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
 
             <Button
-                Margin="0,20,0,0"
-                BackgroundColor="#2196F3"
+                BackgroundColor="#4572ED"
                 Command="{Binding SaveRecordCommand}"
-                HeightRequest="50"
+                CornerRadius="15"
+                FontAttributes="Bold"
+                FontSize="18"
+                HeightRequest="55"
                 Text="{Binding ButtonText}"
                 TextColor="White" />
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

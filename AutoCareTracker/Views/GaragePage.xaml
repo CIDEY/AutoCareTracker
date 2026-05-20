@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AutoCareTracker.Views.GaragePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:AutoCareTracker.ViewModels"
+    BackgroundColor="#F5F6FA"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+        <!--  Шапка  -->
+        <BoxView
+            Grid.Row="0"
+            HeightRequest="150"
+            VerticalOptions="Start">
+            <BoxView.Background>
+                <LinearGradientBrush EndPoint="1,0">
+                    <GradientStop Offset="0.1" Color="#4572ED" />
+                    <GradientStop Offset="1.0" Color="#2AB27B" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <VerticalStackLayout Grid.Row="0" Padding="25,50,25,0">
+            <Label
+                FontAttributes="Bold"
+                FontSize="32"
+                Text="Мой Гараж"
+                TextColor="White" />
+            <Label
+                FontSize="14"
+                Text="Выберите автомобиль"
+                TextColor="#D1D1D1" />
+        </VerticalStackLayout>
+
+        <!--  Список машин  -->
+        <CollectionView
+            Grid.Row="1"
+            Margin="0,10,0,0"
+            ItemsSource="{Binding Vehicles}">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    Margin="0,100,0,0"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="60"
+                        HorizontalOptions="Center"
+                        Text="🏢" />
+                    <Label
+                        FontSize="16"
+                        Text="Ваш гараж пуст"
+                        TextColor="Gray" />
+                    <Button
+                        Margin="0,20"
+                        Command="{Binding AddVehicleCommand}"
+                        Text="Добавить первую машину" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem
+                                    BackgroundColor="#FF5252"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:GarageViewModel}}, Path=DeleteVehicleCommand}"
+                                    CommandParameter="{Binding .}"
+                                    Text="Удалить" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Frame
+                            Margin="15,8"
+                            Padding="20"
+                            BackgroundColor="White"
+                            BorderColor="Transparent"
+                            CornerRadius="15">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:GarageViewModel}}, Path=SelectVehicleCommand}" CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="20">
+                                <Ellipse
+                                    Fill="#F0F3FF"
+                                    HeightRequest="50"
+                                    WidthRequest="50" />
+                                <Label
+                                    HorizontalOptions="Center"
+                                    Text="🚗"
+                                    TranslationX="-35"
+                                    VerticalOptions="Center" />
+
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        Text="{Binding FullName}"
+                                        TextColor="#2C3E50" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Text="{Binding Plate}"
+                                        TextColor="#4572ED" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Кнопка добавить авто  -->
+        <Button
+            Grid.Row="1"
+            Margin="0,0,25,30"
+            BackgroundColor="#2AB27B"
+            Command="{Binding AddVehicleCommand}"
+            CornerRadius="32"
+            FontSize="30"
+            HeightRequest="65"
+            HorizontalOptions="End"
+            Text="+"
+            TextColor="White"
+            VerticalOptions="End"
+            WidthRequest="65" />
+    </Grid>
+</ContentPage>

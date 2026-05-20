@@ -66,6 +66,7 @@ namespace AutoCareTracker.ViewModels
                 // ЛОГИКА СОЗДАНИЯ (твой старый код)
                 var newRecord = new ServiceRecord
                 {
+                    VehicleId = AppState.SelectedVehicle.Id,
                     WorkType = SelectedCategory,
                     Mileage = int.TryParse(Mileage, out var m) ? m : 0,
                     Date = Date,

@@ -4,9 +4,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AutoCareTracker"
-    Shell.FlyoutBehavior="Disabled"
-    Title="AutoCareTracker">
+    xmlns:views="clr-namespace:AutoCareTracker.Views"
+    Title="AutoCareTracker"
+    Shell.FlyoutBehavior="Disabled">
 
+    <ShellContent
+        Title="Garage"
+        ContentTemplate="{DataTemplate views:GaragePage}"
+        Route="GaragePage" />
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"

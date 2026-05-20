@@ -7,10 +7,13 @@ namespace AutoCareTracker.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public string WorkType { get; set; } // Например: "Замена масла"
-        public int Mileage { get; set; }    // Пробег
-        public DateTime Date { get; set; }   // Дата обслуживания
-        public double Cost { get; set; }     // Стоимость
-        public string Notes { get; set; }    // Заметки
+        // Ссылка на автомобиль, к которому относится запись
+        public int VehicleId { get; set; }
+
+        public string WorkType { get; set; }
+        public int Mileage { get; set; }
+        public DateTime Date { get; set; }
+        public double Cost { get; set; }
+        public string Notes { get; set; }
     }
 }

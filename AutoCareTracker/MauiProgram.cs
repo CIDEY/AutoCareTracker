@@ -1,5 +1,6 @@
 ﻿using AutoCareTracker.Services;
 using AutoCareTracker.ViewModels;
+using AutoCareTracker.Views;
 using Microsoft.Extensions.Logging;
 
 namespace AutoCareTracker
@@ -21,15 +22,22 @@ namespace AutoCareTracker
     		builder.Logging.AddDebug();
 #endif
 
+
+            // Сервисы
             builder.Services.AddSingleton<DatabaseService>();
 
-            builder.Services.AddSingleton<DatabaseService>();
+            // Гараж
+            builder.Services.AddSingleton<ViewModels.GarageViewModel>();
+            builder.Services.AddSingleton<Views.GaragePage>();
 
-            builder.Services.AddSingleton<MainViewModel>();
+            // Главная
+            builder.Services.AddSingleton<ViewModels.MainViewModel>();
             builder.Services.AddSingleton<MainPage>();
 
+            // Добавление
             builder.Services.AddTransient<Views.AddRecordPage>();
             builder.Services.AddTransient<ViewModels.AddRecordViewModel>();
+
             return builder.Build();
         }
     }
